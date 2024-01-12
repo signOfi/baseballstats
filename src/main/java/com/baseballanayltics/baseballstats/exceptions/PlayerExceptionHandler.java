@@ -22,4 +22,18 @@ public class PlayerExceptionHandler {
         return new ResponseEntity<>(playerErrorResponse, HttpStatus.NOT_FOUND);
     }
 
+    public ResponseEntity<PlayerErrorResponse> notValidPlayer(PlayerNotValidException exception) {
+        /* This handles the cases where a person enters invalid params for creating a new player */
+
+        /* Need to create an invalid error response */
+        PlayerErrorResponse playerErrorResponse = new PlayerErrorResponse();
+        playerErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        playerErrorResponse.setMessage(exception.getMessage());
+        playerErrorResponse.setTimeStamp(System.currentTimeMillis());
+
+        /* Return Response entity */
+        return new ResponseEntity<>(playerErrorResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
 }

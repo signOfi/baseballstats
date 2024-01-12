@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Player Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .no-data-found {
+            text-align: center;
+            margin: 20px;
+            font-size: 18px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h3 class="mb-4 text-center">Player Found!</h3>
+    <hr>
+
+    <!-- Single Player Display -->
+    <div th:if="${player != null}">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Team</th>
+                <th>OPS</th>
+                <th>OBP</th>
+                <th>AVG</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${player.id}"></td>
+                <td th:text="${player.name}"></td>
+                <td th:text="${player.team}"></td>
+                <td th:text="${player.onBaseSlug}"></td>
+                <td th:text="${player.obp}"></td>
+                <td th:text="${player.average}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${player == null}" class="no-data-found">
+        <p>No player found with the given ID.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

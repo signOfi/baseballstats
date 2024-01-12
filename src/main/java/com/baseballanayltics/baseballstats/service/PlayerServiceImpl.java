@@ -3,6 +3,7 @@ package com.baseballanayltics.baseballstats.service;
 import com.baseballanayltics.baseballstats.dao.PlayerRepository;
 import com.baseballanayltics.baseballstats.entity.Player;
 import com.baseballanayltics.baseballstats.exceptions.PlayerNotFoundException;
+import com.baseballanayltics.baseballstats.exceptions.PlayerNotValidException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,55 +28,60 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     @Transactional
-    public void updatePlayer(int id, Player player) {
+    public void updatePlayer(int id, Player updatedPlayer) {
 
-        // First get player by id
-        Optional<Player> playerOptional = getPlayerById(id);
+        /*
+         * Find by id then 2 situations
+         * Case 1: A Player is returned, so we update the fields and update the repository
+         * Case II: Thrown new exception if the optional is empty.
+         */
 
-        // Check if play exists
-        if(playerOptional.isPresent()) {
-            // Get Player then update ALL the fields from passed player
-            Player dbPlayer = playerOptional.get();
-            dbPlayer.updateFields(player);
-            // Save player onto db
-            playerRepository.save(dbPlayer);
-        }
-        // Else throw exception
-        throw new PlayerNotFoundException("Cannot update player, player id: " + id + " not found...");
-
+        playerRepository.findById(id).ifPresentOrElse(
+                player -> {
+                    player.updateFields(updatedPlayer);
+                    playerRepository.save(player);
+                },
+                () -> {
+                    throw new PlayerNotFoundException("Player with id " + id + " not found cannot update...");
+                }
+        );
     }
 
     @Override
     @Transactional
     public void deletePlayer(int id) {
 
-        /* Delete player by ID: If not found throw an exception */
-
-        if (playerRepository.existsById(id)) {
-            playerRepository.deleteById(id);
-        }
-
-        throw new PlayerNotFoundException("Player cannot be deleted since ID: " + id + " does not exist.");
+        playerRepository.findById(id).ifPresentOrElse(
+                player ->
+                        playerRepository.deleteById(id),
+                () -> {
+                    throw new PlayerNotFoundException("Player with id: " + id + " not found, cannot delete");
+                }
+        );
 
     }
 
     @Override
     @Transactional
     public void createNewPlayer(Player player) {
-        playerRepository.save(player);
+
+            /* Required Fields */
+            if (player.getName() == null || player.getAge() == null || player.getTeam() == null ) {
+                throw new PlayerNotValidException("Player needs a name, age, and team");
+            }
+
+            // Else save if valid player creation
+            playerRepository.save(player);
     }
 
     @Override
     public Optional<Player> getPlayerById(int id) {
-        // Find player by id
-        Optional<Player> player = playerRepository.findById(id);
 
-        // Check if play exists
-        if (player.isPresent()) {
-            return player;
-        }
-
-        // Else throw an exception
-        throw new PlayerNotFoundException("Player is not found");
+        // an optional checks if id contains a player if not we throw an exception
+        return Optional.ofNullable(playerRepository.findById(id)
+                .orElseThrow(() -> new PlayerNotFoundException("Player with id " + id +  " not found")));
     }
+
 }
+
+

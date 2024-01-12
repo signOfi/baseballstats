@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Player to Add</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f4f4f4; /* Light grey background */
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .form-label {
+            color: #5D1049; /* Dark Purple */
+        }
+        .btn-info {
+            background-color: #17a2b8; /* Bootstrap info color */
+        }
+        .btn-primary {
+            background-color: #007bff; /* Bootstrap primary color */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h3 class="mb-4">Add a New Player</h3>
+
+    <form th:action="@{/players/save}" th:object="${player}" method="POST" class="needs-validation" novalidate>
+
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" th:field="*{name}" id="name" class="form-control" placeholder="Name" required>
+            <div class="invalid-feedback">Please provide a name.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="team" class="form-label">Team:</label>
+            <input type="text" th:field="*{team}" id="team" class="form-control" placeholder="Team" required>
+            <div class="invalid-feedback">Please provide a team.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="team" class="form-label">Age:</label>
+            <input type="text" th:field="*{age}" id="age" class="form-control" placeholder="Age" required>
+            <div class="invalid-feedback">Please provide the age.</div>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="ops" class="form-label">OPS:</label>
+            <input type="text" th:field="*{onBaseSlug}" id="ops" class="form-control" placeholder="OPS">
+        </div>
+
+        <div class="mb-3">
+            <label for="obp" class="form-label">OBP:</label>
+            <input type="text" th:field="*{obp}" id="obp" class="form-control" placeholder="OBP">
+        </div>
+
+        <div class="mb-3">
+            <label for="avg" class="form-label">AVG:</label>
+            <input type="text" th:field="*{average}" id="avg" class="form-control" placeholder="AVG">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Player</button>
+        </form>
+
+    <hr>
+    <a th:href="@{/players/list}">Redirect back to homepage</a>
+
+    </div>
+
+<script>
+    // JavaScript for enabling form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            let forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            let validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+
+</body>
+</html>
